@@ -83,7 +83,94 @@ void fifo()
     display();
     
 }
+void lru()
+{
+    for (int i = 0; i < f; i++)
+    {
+        frame[i] = -1;
+    }
+    for (int i = 0; i < n; i++)
+    {
+        int cnt = 0;
+        int j = 0;
+        for (; j < f; j++)
+        {
+            if (frame[j] == -1)
+            {
+                cnt++;
+                break;
+            }
+        }
+        if (cnt != 0)
+        {
+            miss++;
+            frame[j] = p[i];
+        }
+        else
+        {
+            int count = 0;
+            for (int k = 0; k < f; k++)
+            {   
+                // Checking hit condition 
+                if (p[i] == frame[k])
+                {
+                    count++;
+                    break;
+                }
+            }
+            if (count != 0)
+            {
+                // If hit then count of hit is added
+                hit++;
+            }
+            else
+            {
+                miss++;
+                int fReplace[f];
 
+                for (int j = 0; j < f; j++)
+                {
+                    fReplace[j] = -1;
+                /*storing the indexes of the frame elements to find the farthest element*/
+                    for (int k = i - 1; k >= 0; k--)
+                    {
+                        if (p[k] == frame[j])
+                        {
+                            fReplace[j] = k;
+                            break;
+                        }
+                    }
+                }
+                //Finding the farthest frame 
+
+                int miniIndex=1e9;
+                int ind=-1;
+                for(int j=0; j<f; j++)
+                {
+                    if(fReplace[j]==-1)
+                    {
+                        ind=j;
+                        break;
+                    }
+                    if(miniIndex>fReplace[j])
+                    {
+                        miniIndex=fReplace[j];
+                        ind=j;
+                    }
+                }
+                // frame replaced
+                // printf("%d-F\n",fReplace);
+                frame[ind]=p[i];
+            }
+        }
+
+        for (int j = 0; j < f; j++)
+        {
+            arr[j][i] = frame[j];
+        }
+    }
+    display();
+}
 void optimal()
 {
     for(int i=0;i<f; i++)
@@ -204,6 +291,7 @@ int main()
                 break;
             case 2: 
                 // LRU();
+                lru();
                 break;
             case 3: 
                 optimal();

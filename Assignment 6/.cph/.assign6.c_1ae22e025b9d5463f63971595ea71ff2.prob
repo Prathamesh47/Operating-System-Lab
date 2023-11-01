@@ -1,0 +1,1 @@
+{"name":"Local: assign6","url":"e:\\Operating System\\Assignment 6\\assign6.c","tests":[{"id":1698847964630,"input":"20\n7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1\n4","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Operating System\\Assignment 6\\assign6.c","group":"local","local":true}
