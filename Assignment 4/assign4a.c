@@ -85,7 +85,7 @@ int main()
     for(int i=0; i<NUM_CONSUMER; i++)
     {
         consumer_ids[i]=i+1;
-        pthread_create(&thread_consumer[i],NULL,producer,&consumer_ids[i]);
+        pthread_create(&thread_consumer[i],NULL,consumer,&consumer_ids[i]);
     }
     for(int i=0; i<NUM_PRODUCER; i++)
     {
