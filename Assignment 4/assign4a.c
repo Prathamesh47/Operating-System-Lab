@@ -23,13 +23,13 @@ void *producer(void* arg)
             printf("Buffer is full\n");
             sleep(1);
         }
-        sem_wait(&empty);
-        pthread_mutex_lock(&mutex);
+        sem_wait(&empty);  // It decrements the empty value which is initialize to buffersize
+        pthread_mutex_lock(&mutex); // It makes the lock such that producer will produce data and does not allow to consumer to consume the data
         buffer[cnt++]=item;
         printf("Producer %d produced Item: IO%d\n",producer_id,item);
         printf("Size of Buffer is %d\n",cnt);
         pthread_mutex_unlock(&mutex);
-        sem_post(&full);
+        sem_post(&full); // It increments the full value which is initialize to zero
         sleep(1);
  
     }
@@ -48,14 +48,14 @@ void *consumer(void* arg)
             printf("Buffer is Empty\n");
             sleep(1);
         }
-        sem_wait(&full);
+        sem_wait(&full);  // It decrements the full value which is initialize to buffersize
         pthread_mutex_lock(&mutex);
         item= buffer[cnt--];
         printf("Consumer %d consumerd Item No: IO%d\n",consumer_id,item);
         printf("Size of Buffer is %d\n",cnt);
         pthread_mutex_unlock(&mutex);
-        sem_post(&empty);
-        sleep(1);
+        sem_post(&empty);  // It increments the empty value which is initialize to zero
+        sleep(1); 
  
     }
     pthread_exit(NULL);
