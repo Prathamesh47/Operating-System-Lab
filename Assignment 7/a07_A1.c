@@ -1,38 +1,70 @@
 #include <stdio.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <stdlib.h>
 #include <unistd.h>
-int main()
-{
-    int fd;
-    // FIFO file path
-    char *myfifo1 = "/tmp/myfifo1";
-    char *myfifo2 = "/tmp/myfifo2";
-    // Creating the named file(FIFO)
-    // mkfifo(<pathname>, <permission>)
-    mkfifo(myfifo1, 0666);
-    mkfifo(myfifo2, 0666);
-    char arr1[80], arr2[80];
-    while (1)
-    {
-        // Open FIFO for write only
-        fd = open(myfifo1, O_WRONLY);
-        // Take an input arr2ing from user.
-        // 80 is maximum length
-        fgets(arr2, 80, stdin);
-        // Write the input arr2ing on FIFO
-        // and close it
-        write(fd, arr2, strlen(arr2) + 1);
-        close(fd);
-        // Open FIFO for Read only
-        fd = open(myfifo2, O_RDONLY);
-        // Read from FIFO
-        read(fd, arr1, sizeof(arr1));
-        // Print the read message
-        printf("User2: %s\n", arr1);
-        close(fd);
-    }
-    return 0;
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <errno.h>
+
+int main() {
+	int f1 = 0, f2 = 0, i = 0, ret;
+	char readSentence[100], buffer[300];
+	int numChar = 0, numWords = 0, numLines = 0, numLetters = 0;
+	FILE *fp;
+
+	ret = mkfifo("myfifo",0666);
+	if((ret < 0) && (errno != EEXIST)) {
+		printf("\nERROR WHILE CREATING THE FIFO!");
+		return;
+	}
+
+	if(errno == EEXIST) {
+		printf("\nFIFO ALREADY EXISTS!");
+	}
+
+	printf("\nWAITING FOR OUTPUT FROM FIFO1...\n");
+	sleep(5);
+
+	f1 = open("myfifo",O_RDONLY);
+	read(f1,readSentence,100);
+	printf("\n\n%s\n\n",readSentence);
+	int w = 0;
+	for(i = 0; readSentence[i] != '\0'; i++) {
+		if((readSentence[i] == '.') || (readSentence[i] == '!') || (readSentence[i] == '?')) {
+			numLines++;
+		}
+		
+		if((readSentence[i] == ' ') || (readSentence[i] == ',')) {
+			numWords++;
+		}
+
+		if((readSentence[i] == ' ') || (readSentence[i] == ',') || (readSentence[i] == '.') || (readSentence[i] == '!') || (readSentence[i] == '?')) {
+			w++;
+		}
+	}
+	numChar = i-1;
+	numLetters = i-w-1;
+
+	fp = fopen("7b.txt","w");
+	fprintf(fp, "\nNO. OF CHARACTERS = %d\n",numChar);
+	fprintf(fp, "NO. OF LETTERS = %d\n",numLetters);
+	fprintf(fp, "NO. OF WORDS = %d\n",numWords+1);
+	fprintf(fp, "NO. OF LINES = %d\n",numLines);
+	fprintf(fp,"%c",EOF);
+	fclose(fp);
+
+	fp = fopen("7b.txt","r");
+	i = 0;
+	while(fscanf(fp,"%c",&buffer[i++]) != EOF) {
+		buffer[i] = '\0';
+	}
+	fclose(fp);
+
+	printf("\nWRITING THE OUTPUT TO FIFO2...\n");
+	f2 = open("myfifo",O_WRONLY);
+	write(f2,buffer,(strlen(buffer)+1));
+	sleep(5);
+	unlink("myfifo");
+	return 0;
 }
