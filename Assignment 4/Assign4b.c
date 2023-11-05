@@ -1,3 +1,4 @@
+
 #include<unistd.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -18,8 +19,8 @@ void *reader(void* arg)
     {
         pthread_mutex_lock(&wr);
     }
-    printf("Reader %d is in critical section",id);
-    printdf("Reader %d is reading data %d",id,a);
+    printf("\nReader %d is in critical section\n",id);
+    printf("\nReader %d is reading data %d\n",id,a);
     sleep(1);
     pthread_mutex_lock(&mutex);
     readcnt--;
@@ -28,18 +29,18 @@ void *reader(void* arg)
     {
         pthread_mutex_unlock(&wr);
     }
-    printf("Reader is left the critical section !!!\n");
+    printf("\nReader is left the critical section !!!\n");
 }
 
 void *writer(void* arg)
 {
     int id=*((int*)arg);
     pthread_mutex_lock(&wr);
-    printf("Writer %d is in critical section",id);
-    printdf("Writer %d is writing data %d",id,a++);
+    printf("\nWriter %d is in critical section\n",id);
+    printf("\nWriter %d is writing data %d\n",id,a++);
     sleep(1);
     pthread_mutex_unlock(&wr);
-    printf("Writer is left the critical section !!!\n");
+    printf("\nWriter is left the critical section !!!\n");
 }
 
 
