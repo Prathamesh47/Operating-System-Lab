@@ -1,202 +1,277 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
 
-void customBubbleSort(int arr[], int n)
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/types.h>
+#include<string.h>
+#include<unistd.h>
+#include<sys/wait.h>
+
+int n;
+int arr[100];
+int choice=0;
+void bubblesort()
 {
-    int temp, i, j;
-    for (i = 0; i < n - 1; i++)
+    int temp;
+    for(int i=0;i<n-1;i++)
     {
-        for (j = 0; j < n - i - 1; j++)
+        for(int j=0;j<n-i-1;j++)
         {
-            if (arr[j] > arr[j + 1])
+            if(arr[j]>arr[j+1])
             {
-                temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+                temp = arr[j+1];
+                arr[j+1]=arr[j];
+                arr[j]= temp;
             }
         }
     }
 }
-
-void customMerge(int arr[], int l, int m, int r)
+void merge(int arr[],int l,int mid,int h)
 {
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
-
-    int L[n1], R[n2];
-
-    for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
-
-    i = 0;
-    j = 0;
-    k = l;
-
-    while (i < n1 && j < n2)
+    int n1 = mid -l +1;
+    int n2 = h-mid;
+    int L[n1];
+    int R[n2];
+    for(int i=0;i<n1;i++)
     {
-        if (L[i] <= R[j])
+        L[i]=arr[l+i];
+    }
+    for(int i=0;i<n2;i++)
+    {
+        R[i]= arr[mid+1+i];
+    }
+    int i=0;
+    int j=0;
+    int k=l;
+    while(i<n1&&j<n2)
+    {
+        if(L[i]<=R[j])
         {
-            arr[k] = L[i];
+            arr[k]= L[i];
             i++;
         }
-        else
-        {
-            arr[k] = R[j];
+        else{
+            arr[k]=R[j];
             j++;
         }
         k++;
     }
-
-    while (i < n1)
+    while(i<n1)
     {
-        arr[k] = L[i];
+        arr[k]= L[i];
         i++;
         k++;
     }
-
-    while (j < n2)
+    while(j<n2)
     {
-        arr[k] = R[j];
+        arr[k]=R[j];
         j++;
         k++;
     }
+
+
 }
 
-void customMergeSort(int arr[], int l, int r)
+void mergesort(int arr[],int l,int h)
 {
-    if (l < r)
+    if(l<h)
     {
-        int m = l + (r - l) / 2;
-        customMergeSort(arr, l, m);
-        customMergeSort(arr, m + 1, r);
-        customMerge(arr, l, m, r);
+        int mid = l +(h-l)/2;
+        mergesort(arr,l,mid);
+        mergesort(arr,mid+1,h);
+
+        merge(arr,l,mid,h);
     }
 }
+void zombie()
+{
+    
+    int p_id = getpid();
+    printf("\n Parent's process id is %d ",p_id);
+    printf("\n Forking the process");
+    pid_t id = fork();
+    if(id==-1)
+    {
+        printf("\n The child is not created ");
+    }
+    else if(id ==0)
+    {
+        printf("\n In child process ");
+        printf("\n The child process id is %d",getpid());
+        printf("\n This child parent id is %d",getppid());
+        printf("\n Array before sorting is : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\nUsing bubble sort sorting the array");
+        bubblesort();
+        printf("\nPrinting the sorted array(Bubble sort) : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\n Above is the sorted array using bubble sort");
+        printf("\n The child process executed successfully");
+        exit(0);
+    }
+    else
+    {
+        sleep(40);
+        printf("\nProcess is with parent its id is : %d",getpid() );
+        printf("\nChild is terminated after wait with pid: ");
+        printf("\n Array before sorting is : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+         printf("\nUsing merge sort sorting the array");
+        mergesort(arr,0,n-1);
+        printf("\nPrinting the sorted array(Bubble sort) : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("Parent executed successfully\n");
+        sleep(30);
+    }
+}
+void normal()
+{
+    pid_t p_id = getpid();
+    printf("\n Parent's process id is %d ",p_id);
+    printf("\n Forking the process");
+    pid_t id = fork();
+    if(id==-1)
+    {
+        printf("\n The child is not created ");
+    }
+    else if(id ==0)
+    {
+        printf("\n In child process ");
+        printf("\n The child process id is %d",getpid());
+        printf("\n This child parent id is %d",getppid());
+        printf("\n Array before sorting is : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\nUsing bubble sort sorting the array");
+        bubblesort();
+        printf("\nPrinting the sorted array(Bubble sort) : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\n Above is the sorted array using bubble sort");
+        printf("\n The child process executed successfully");
+    }
+    else
+    {
+        printf("\nProcess is with parent its id is : %d",getpid() );
+        pid_t cpid = wait(NULL);
+        printf("\nChild is terminated after wait with pid: %d", cpid);
+        printf("\n Array before sorting is : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+         printf("\nUsing merge sort sorting the array");
+        mergesort(arr,0,n-1);
+        printf("\nPrinting the sorted array(Merge sort) : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\nParent executed successfully\n");
+    }
+}
+void orphan()
+{
+    pid_t p_id = getpid();
+    printf("\n Parent's process id is %d ",p_id);
+    printf("\n Forking the process");
+    pid_t id = fork();
+    if(id==-1)
+    {
+        printf("\n The child is not created ");
+    }
+    else if(id ==0)
+    {
+        printf("\n In child process ");
+        printf("\n The child process id is %d",getpid());
+        printf("\n This child parent id is %d",getppid());
+        printf("\n Array before sorting is : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\nUsing bubble sort sorting the array");
+        bubblesort();
+        printf("\nPrinting the sorted array(Bubble sort) : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\n Above is the sorted array using bubble sort");
+        sleep(30);
+        printf("\n The child process executed successfully");
+        printf("\n The child process id is %d",getpid());
+        printf("\n This child parent id is %d",getppid());
+    }
+    else
+    {
+        printf("\nProcess is with parent its id is : %d",getpid() );
+        // pid_t cpid = wait(NULL);
+        // printf("\nChild is terminated after wait with pid: %d", cpid);
+        printf("\n Array before sorting is : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+         printf("\nUsing merge sort sorting the array");
+        mergesort(arr,0,n-1);
+        printf("\nPrinting the sorted array(Merge sort) : ");
+        for(int i=0;i<n ;i++)
+        {
+            printf(" %d",arr[i]);
+        }
+        printf("\nParent executed successfully\n");
+    }
+}
+void input()
+{
+    printf("\nEnter no of elements : ");
+    scanf("%d",&n);
+    printf("\nEnter elements of array : ");
+    for(int i=0;i<n;i++)
+    {
+        scanf("%d",&arr[i]);
+    }
+    printf("\n---------------- MENU ----------------\n");
+    printf("1) Normal Execution\n");
+    printf("2) Zombie\n");
+    printf("3) Orphan\n");
+    printf("Please enter your choice: \n");
+    scanf("%d", &choice);
+    if(choice==1)
+    {
+        normal();
+    }
+    else if (choice==2)
+    {
+        zombie();
+    }
+    else if (choice==3)
+    {
+        orphan();
+    }
+
+}
+
+
 
 int main()
 {
-    int n, i;
-    printf("Size of array: ");
-    scanf("%d", &n);
-    int arr[n];
-
-    printf("Enter %d numbers:\n", n);
-    for (i = 0; i < n; i++)
-    {
-        scanf("%d", &arr[i]);
-    }
-
-    int user_choice;
-    printf("\nEnter choice:\n");
-    printf("1. Fork, Wait, and Merge/Bubble Sort\n");
-    printf("2. Orphan Process\n");
-    printf("3. Zombie Process\n");
-    scanf("%d", &user_choice);
-
-    switch (user_choice)
-    {
-    case 1:
-    {
-        pid_t pid = fork();
-
-        if (pid < 0)
-        {
-            printf("Fork failed.\n");
-            exit(1);
-        }
-        else if (pid == 0)
-        {
-            printf("\nChild process (Bubble Sort) started.\n");
-            customBubbleSort(arr, n);
-            printf("\nSorted array by the child process (Bubble Sort):\n");
-            for (i = 0; i < n; i++)
-                printf("%d ", arr[i]);
-            printf("\n");
-        }
-        else
-        {
-            printf("\nParent process (Merge Sort) started.\n");
-            customMergeSort(arr, 0, n - 1);
-            printf("\nSorted array by the parent process (Merge Sort):\n");
-            for (i = 0; i < n; i++)
-                printf("%d ", arr[i]);
-            printf("\n");
-            wait(NULL);
-            printf("\nChild process has completed.\n");
-        }
-        break;
-    }
-    case 2:
-    {
-        pid_t pid = fork();
-
-        if (pid < 0)
-        {
-            printf("Fork failed.\n");
-            exit(1);
-        }
-        else if (pid == 0)
-        {
-            // Orphan process
-            printf("\nOrphan process started (PID: %d).\n", getpid());
-            printf("Parent process (PID: %d) terminated before the child process.\n",
-                   getppid());
-
-            // Sleep to create an orphan process sleep(10);
-
-            printf("Orphan process (PID: %d) completed.\n", getpid());
-        }
-        else
-        {
-            // Parent process
-            printf("\nParent process (PID: %d) started.\n", getppid());
-
-            sleep(5);
-            system("ps -elf | grep -e 'PPID\\|CHILD'");
-
-            printf("Parent process (PID: %d) completed.\n", getppid());
-        }
-        break;
-    }
-    case 3:
-    {
-        pid_t pid = fork();
-
-        if (pid < 0)
-        {
-            printf("Fork failed.\n");
-            exit(1);
-        }
-        else if (pid == 0)
-        {
-            // Child process
-            printf("\nChild process (Zombie) started.\n");
-
-            printf("Child process (PID: %d) completed.\n", getpid());
-        }
-        else
-        {
-            // Parent process sleep(10);
-            char command[100];
-            sprintf(command, "ps -elf | grep %d", getpid());
-            system(command);
-            printf("\nParent process (Zombie) started.\n");
-            printf("Parent process will sleep to create a Zombie (PID: %d).\n", pid);
-            printf("Parent process (PID: %d) completed.\n", getppid());
-
-            wait(NULL);
-        }
-        break;
-    }
-    default:
-        printf("Invalid choice.\n");
-        break;
-    }
-
+    input();
     return 0;
 }
