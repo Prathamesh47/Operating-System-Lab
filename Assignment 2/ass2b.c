@@ -1,21 +1,25 @@
-#include <stdio.h> 
-#include <string.h> 
-#include <stdlib.h> 
-#include <unistd.h> 
-#include <sys/types.h> 
-// #include <sys/wait.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+#include<sys/types.h>
+#include<unistd.h>
+    
+int n;
+int arr[100];
 
-void sortArray(int arr[], int n)
+void bubblesort()
 {
-    for (int i = 0; i < n - 1; i++)
+    int temp;
+    for(int i=0;i<n-1;i++)
     {
-        for (int j = 0; j < n - i - 1; j++)
+        for(int j=0;j<n-i-1;j++)
         {
-            if (arr[j] > arr[j + 1])
+            if(arr[j]>arr[j+1])
             {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+                temp = arr[j+1];
+                arr[j+1]=arr[j];
+                arr[j]= temp;
             }
         }
     }
@@ -23,54 +27,51 @@ void sortArray(int arr[], int n)
 
 int main()
 {
-    int n;
-    printf("Size of array: ");
-    scanf("%d", &n);
-    int arr[n];
-    printf("Enter the elements: ");
-    for (int i = 0; i < n; i++)
+    char *arg[100], str[100];
+    printf("Enter the size of array\n");
+    scanf("%d",&n);
+    printf("Enter the elements of array\n");
+    for(int i=0; i<n; i++)
     {
-        scanf("%d", &arr[i]);
+        scanf("%d",&arr[i]);
     }
-    pid_t pid = fork();
-    if (pid < 0)
-    {
-        fprintf(stderr, "Fork failed\n");
-        return 1;
-    }
-    else if (pid == 0)
-    {
-
-        // Child process
-        printf("\nMain process start: (pid) %d\n", getpid());
-        sortArray(arr, n);
-        printf("Sorted array: ");
-        for (int i = 0; i < n; i++)
+      printf("Printing the array before sorting method\n");
+        for(int i=0; i<n; i++)
         {
-            printf("%d ", arr[i]);
+            printf("%d",&arr[i]);
         }
-        printf("\n");
-
-        char *args[n + 2];
-        args[0] = "./c";
-        for (int i = 0; i < n; i++)
+        printf("Sorting Algothim used id Bubble Sort\n Calling the bubble sort algorithm\n");
+        bubblesort();
+        printf("Printing the array after sorting method\n");
+         for(int i=0; i<n; i++)
         {
-            char buffer[10];
-            snprintf(buffer, sizeof(buffer), "%d", arr[i]); // converts int to string format and pass them into the buffer
-            args[i + 1] = strdup(buffer);                   // strdup:- (string duplicate) create a new copy of the string
+            printf("%d",&arr[i]);
         }
-        args[n + 1] = NULL; // indicate the end of the list of command-line arguments.
-
-        execve(args[0], args, NULL);
-        perror("execve");
-        printf("Main process end: (pid) %d\n", getpid());
-        return 1;
-    }
-    else
+    pid_t pid=fork();
+    if(pid<0)
     {
-        // Parent process wait(NULL);
-        printf("\nParent process finished.\n");
+        printf("Child process failed to create\n");
     }
+    else if(pid==0)
+    {
+        printf("Process Controls shifts to child process\n");
+        printf("Child Process id is ",getpid());
+        printf("The process id of parent process is ",getppid());
+      
+        for(int j=0; j<n; j++)
+        {
+            sprintf(str,"%d",arr[j]);
+            arg[j]=malloc(sizeof(str));
+            strcpy(arg[j],str);
+        }
+        printf("Execv Function is calling such that it tranfer to another process to run and terminate itself\n");
+        execve("ass2b2.c",arg,NULL);
+        printf("Child process get teminated\n");
 
-    return 0;
+    }
+    else{
+        printf("Parent process id %d:\n",getpid());
+        wait(NULL);
+        printf("Parent process get terminated\n");
+    }
 }
