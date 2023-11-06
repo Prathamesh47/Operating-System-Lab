@@ -31,7 +31,7 @@ Insert(){
         while true; do
             echo "Enter Name"
             read name
-            if [[ "$name"=~ ^[0,9]]];then
+            if [[ "$name"=~ ^[0-9]]];then
                 echo "Invalid name"
             else
                 break
@@ -41,7 +41,7 @@ Insert(){
         while true; do
             echo "Enter Phone number"
             read phone
-            if [[ "$phone"=~ ^[0,9]{10}$ ]];then
+            if [[ "$phone"=~ ^[0-9]{10}$ ]];then
                 break
             else 
                 echo "Invalid number"
@@ -52,7 +52,7 @@ Insert(){
         read city
 
         record = "$id $name $phone $city"
-        echo "$record" >> "$ab"
+        echo "$record" >> $ab
         echo "Record Inserted Successfully"
     else
         echo "File does not exist"
@@ -69,7 +69,7 @@ Modify()
         read modifyId
         echo "Enter the new data (ID Name Phone City):"
         read newdata
-        sed -i "/^$modifyId/c$newdata" "$ab"
+        sed -i "/^$modifyId/c$newdata" $ab
         echo "Entry modified successfully"
     else
         echo "File does not exist"
@@ -82,7 +82,7 @@ Delete()
     if [ -e "$ab" ]; then
         echo "Enter the id of the entry in which data has to delete"
         read deleteId
-        sed -i "/^$deleteId/d" "$ab"
+        sed -i "/^$deleteId/d" $ab
         echo "Entry modified successfully"
     else
         echo "File does not exist"

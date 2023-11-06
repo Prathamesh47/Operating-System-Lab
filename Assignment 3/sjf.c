@@ -35,7 +35,48 @@ void sort(struct process processes[],int n)
         }
     }
 }
+void roundrobin(struct process processes[],int n)
+{
+    int pending=n;
+    int cnt=0;
+    int ctime=0;
+    int timequantum;
+    printf("\nEnter time quantum\n");
+    scanf("%d",&timequantum);
+    int finish[n];
+    for(int i=0; i<n; i++)
+    {
+        finish[i]=0;
+    }
+    int tat[n],wt[n];
+    for(ctime=0,cnt=0; pending>0;)
+    {
+        if(finish[cnt]!=1 && processes[cnt].arrival<=ctime && processes[cnt].rt<=timequantum)
+        {
+            ctime+=processes[cnt].rt;
+            finish[cnt]=1;
+            processes[cnt].ct=ctime;
+            pending--;
 
+            tat[cnt]=processes[cnt].ct-processes[cnt].arrival;
+            wt[cnt]=tat[cnt]-processes[cnt].burst;
+            for(int i=0; i<processes[cnt].rt; i++)
+            {
+                printf("P%d ",processes[cnt].id);
+            }
+            processes[cnt].ct=0;
+        }
+        else if(finish[cnt]!=1&& processes[cnt].arrival<=ctime&& processes[cnt].rt>timequantum){
+            ctime+=timequantum;
+            processes[cnt].rt-=timequantum;
+            for(int i=0; i<timequantum; i++)
+            {
+                printf("P%d ",processes[cnt].id);
+            }
+        }
+        cnt=(cnt+1)%n;
+    }
+}
 void sjf(struct process processes[],int n)
 {
     int pending=n;
@@ -94,6 +135,7 @@ int main()
         scanf("%d",&processes[i].burst);
         processes[i].rt=processes[i].burst;
     }
-    sjf(processes,n);
+    // sjf(processes,n);
+    roundrobin(processes,n);
     return 0;
 }
