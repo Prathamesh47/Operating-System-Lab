@@ -65,7 +65,7 @@ int main()
             strcpy(arg[j],str);
         }
         printf("Execv Function is calling such that it tranfer to another process to run and terminate itself\n");
-        execve("ass2b2.c",arg,NULL);
+        execve("./ass2b2",arg,NULL);
         printf("Child process get teminated\n");
 
     }
