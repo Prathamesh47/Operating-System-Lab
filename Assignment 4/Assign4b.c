@@ -29,7 +29,7 @@ void *reader(void* arg)
     {
         pthread_mutex_unlock(&wr);
     }
-    printf("\nReader is left the critical section !!!\n");
+    printf("\nReader is left the critical section  !!!\n");
 }
 
 void *writer(void* arg)

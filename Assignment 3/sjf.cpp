@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include<bits/stdc++.h>
 using namespace std;
 // int process[10], arrival[10], burst[10], turnAround[10],waiting[10], ct[10];
 int n;
@@ -38,15 +39,69 @@ void sort(struct process processes[],int n)
 
 void bsort(struct process processes[],int n)
 {
+    
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n-i-1; j++)
+        {
+            if(processes[j+1].arrival<processes[j].arrival)
+            {
+                struct process temp1=processes[j];
+                processes[j]=processes[j+1];
+                processes[j+1]=temp1;
+            }
+        }
+    }
+}
+void roundrobin(struct process round[],int n)
+{
+    int tq;
+    printf("Enter the time Quantum\n");
+    scanf("%d",&tq);
     bool done[n];
+
     for(int i=0; i<n; i++)
     {
         done[i]=0;
     }
+    queue<int>q;
+    int inq[n];
+    
+    for(int i=0; i<n; i++)
+    {
+        inq[i]=0;
+    }
+    inq[0]=1;
+    q.push(0);
+    int ctime=0;
+    while(!q.empty())
+    {
+        int curr=q.front();
+        q.pop();
 
-}
-void roundrobin(struct process processes[],int n)
-{
+        printf(" P%d",round[curr].id);
+
+        if(round[curr].rt<=tq)
+        {   
+            ctime+=round[curr].rt;
+            done[curr]=1;
+            round[curr].ct=round[curr].rt;
+            round[curr].rt=0;
+        }
+        else{
+            ctime+=tq;
+            round[curr].rt-=tq;
+        }
+        for(int i=0; i<n; i++)
+        {
+            if(!done[i] && i!=curr && round[i].arrival<=ctime && inq[i]!=1)
+            {
+                q.push(i);
+                inq[i]=1;
+            }
+        }
+        inq[curr]=0;
+    }
     
 }
 void sjf(struct process processes[],int n)
