@@ -131,7 +131,7 @@ void lru()
                 for (int j = 0; j < f; j++)
                 {
                     fReplace[j] = -1;
-                /*storing the indexes of the frame elements to find the farthest element*/
+                /*storing the indexes of the frame elements to find the farthest element */
                     for (int k = i - 1; k >= 0; k--)
                     {
                         if (p[k] == frame[j])
