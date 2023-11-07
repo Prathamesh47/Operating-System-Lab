@@ -24,8 +24,6 @@ int main()
     // detach from shared memory
     shmdt(str);
 
-    // shmctl(shmid,IPC_RMID,NULL);
-    while (1)
-        ;
+   
     return 0;
 }
