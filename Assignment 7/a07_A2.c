@@ -16,7 +16,7 @@ int main() {
 	ret = mkfifo("myfifo",0666);
 	if((ret < 0) && (errno != EEXIST)) {
 		printf("\nERROR WHILE CREATING THE FIFO!");
-		return;
+		return 0;
 	}
 
 	if(errno == EEXIST) {

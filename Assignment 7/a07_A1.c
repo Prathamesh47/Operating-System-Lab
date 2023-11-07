@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -17,7 +16,7 @@ int main() {
 	ret = mkfifo("myfifo",0666);
 	if((ret < 0) && (errno != EEXIST)) {
 		printf("\nERROR WHILE CREATING THE FIFO\n");
-		return;
+		return 0;
 	}
 
 	if(errno == EEXIST) {
