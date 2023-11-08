@@ -74,6 +74,7 @@ void roundrobin(struct process round[],int n)
     inq[0]=1;
     q.push(0);
     int ctime=0;
+    bsort(round,n);
     while(!q.empty())
     {
         int curr=q.front();
